@@ -4,15 +4,21 @@
 # Author: Wylie Hobbs - 2018
 #
 # Drains the oldest node group in a kubernetes cluster
+# usage:
+#    normal:  ./drain_old_nodes.sh
+#    dry run: ./drain_old_nodes.sh noop
 
-DRY_RUN="$2"
+DRY_RUN="$1"
 
 function drain(){
-  if [ "$DRY_RUN" != "" ]; then
+  if [ "$DRY_RUN" == "noop" ]; then
     echo "Dry run specified - just echo'ing what would happen..."
     echo "kubectl drain $1 --ignore-daemonsets=true --delete-local-data --force"
-  else
+  elif [ "$DRY_RUN" == "" ]; then
     kubectl drain $1 --ignore-daemonsets=true --delete-local-data
+  else
+    echo "Unknown value '$DRY_RUN' specified for dry-run - should be 'noop' or blank"
+    exit 1
   fi
 
   if [ $? -eq 0 ]; then
