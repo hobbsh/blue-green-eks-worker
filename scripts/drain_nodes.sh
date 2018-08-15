@@ -10,10 +10,8 @@ DRY_RUN="$2"
 function drain(){
   if [ "$DRY_RUN" != "" ]; then
     echo "Dry run specified - just echo'ing what would happen..."
-    echo "kubectl cordon $1"
     echo "kubectl drain $1 --ignore-daemonsets=true --delete-local-data --force"
   else
-    kubectl cordon $1 
     kubectl drain $1 --ignore-daemonsets=true --delete-local-data
   fi
 
