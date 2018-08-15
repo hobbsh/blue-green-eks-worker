@@ -24,9 +24,13 @@ function drain(){
   fi
 }
 
+#Get the AGE of the oldest node group to target for draining
 AGE=$(kubectl get no --no-headers=true --sort-by=.metadata.creationTimestamp | awk '{print $4}' | head -n 1) 
+
+#Not a great way of getting the nodes to drain based on grepping the AGE - this could break if there's a match in the node name"
 NODES=$(kubectl get no | awk '{print $4" "$1}' | grep $AGE | awk '{print $2}')
 
+#Confirm the nodes to drain because the above command is weak
 echo -e "Going to drain \n${NODES} \n\nWould you like to proceed (Y/N)?"
 read proceed
 
