@@ -31,7 +31,7 @@ Clone this repo and update any variables, worker parameters, etc. Then you need 
 * `terraform plan`
 * `terraform apply` - to create your cluster with `blue` workers scaled up.
 
-If you don't want to use `us-west-2`, modify (provider.tf)[terraform/provider].
+If you don't want to use `us-west-2`, modify [provider.tf](terraform/provider).
 
 ## Blue/green worker updates
 
