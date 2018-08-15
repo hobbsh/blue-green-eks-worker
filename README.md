@@ -12,6 +12,7 @@ Some documentation and code for managing blue/green EKS workers
 * You already have [private] subnets for EKS created - see [data.tf](terraform/data.tf) as you may need to modify the filter for your subnets
 * You have AWS credentials setup for the correct region and can Terraform on a basic level
 * A public key for your instance keypair exists in the `terraform` folder as `eks.pub` (or change the path in [data.tf](terraform/data.tf))
+* Your load balancers will attach the autoscaling groups created here
 * You've made any additional changes to the Terrform files as required
 
 ## Build your AMI
