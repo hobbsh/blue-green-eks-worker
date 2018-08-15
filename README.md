@@ -43,3 +43,8 @@ Now that you have a cluster and a fully scaled up worker group, time to scale in
 4. Drain the old nodes to transition pods slowly over to the new nodes with [drain_nodes.sh](scripts/drain_nodes.sh). Might want to do one node manually first.
 5. After verifying all the pods have been moved to the right nodes, scale the old worker autoscaling group to zero by setting the parameters in step 1 to 0 on the `blue` worker group
 
+
+## TODO
+
+* Use [lifecyle hooks](https://docs.aws.amazon.com/autoscaling/ec2/userguide/lifecycle-hooks.html) to drain the nodes automatically
+* Write a wrapper around all the terraform, verification, waiting, etc.
