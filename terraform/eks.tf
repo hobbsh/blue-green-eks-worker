@@ -8,6 +8,7 @@ locals {
     {
       name = "k8s-worker-blue",
       ami_id = "ami-0434edf581f70b047",
+      kubelet_extra_args = "--node-labels=eks_worker_group=blue"
       autoscaling_enabled = false,
       protect_from_scale_in = false,
       asg_desired_capacity = "0",
@@ -21,6 +22,7 @@ locals {
     {
       name = "k8s-worker-green",
       ami_id = "ami-0f7c5f77",
+      kubelet_extra_args = "--node-labels=eks_worker_group=green"
       autoscaling_enabled = true,
       protect_from_scale_in = true,
       asg_desired_capacity = "5",

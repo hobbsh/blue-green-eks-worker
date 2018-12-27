@@ -3,12 +3,13 @@
 #
 # Author: Wylie Hobbs - 2018
 #
-# Drains the oldest node group in a kubernetes cluster
+# Drains the given node group in a kubernetes cluster based on a label value
 # usage:
-#    normal:  ./drain_old_nodes.sh
-#    dry run: ./drain_old_nodes.sh noop
+#    normal:  ./drain_old_nodes.sh 'eks_worker_group=blue'
+#    dry run: ./drain_old_nodes.sh 'eks_worker_group=blue' noop
 
-DRY_RUN="$1"
+WORKER_GROUP_LABEL="$1"
+DRY_RUN="$2"
 
 function drain(){
   if [ "$DRY_RUN" == "noop" ]; then
@@ -30,21 +31,18 @@ function drain(){
   fi
 }
 
-#Get the AGE of the oldest node group to target for draining
-AGE=$(kubectl get no --no-headers=true --sort-by=.metadata.creationTimestamp | awk '{print $4}' | head -n 1) 
-
 #Not a great way of getting the nodes to drain based on grepping the AGE - this could break if there's a match in the node name"
-NODES=$(kubectl get no | awk '{print $4" "$1}' | grep $AGE | awk '{print $2}')
+NODES=$(kubectl get no --no-headers -l $WORKER_GROUP_LABEL | awk '{print $1}' | grep -v "No resources found.")
 
 #Confirm the nodes to drain because the above command is weak
-echo -e "Going to drain \n${NODES} \n\nWould you like to proceed (Y/N)?"
+echo -e "Going to drain the following nodes: \n${NODES} \n\nWould you like to proceed (Y/N)?"
 read proceed
 
 if [ "$proceed" == "Y" ]; then
   echo "Waiting 10 seconds to drain nodes, in case you pressed the wrong key..."
   sleep 10
 
-  if [ "$AGE" != "" ]; then
+  if [ ${#NODES[@]} -ne 0 ]; then
     for NODE in ${NODES[@]}; do
       if [ "$NODE" != "" ]; then
         drain $NODE
@@ -53,7 +51,7 @@ if [ "$proceed" == "Y" ]; then
       fi
     done
   else
-    echo "Could not determine age of oldest nodes - exiting"
+    echo "No nodes found containing label '$WORKER_GROUP_LABEL'. Exiting."
     exit 1
   fi
 else
